@@ -79,20 +79,21 @@ public class MainActivity extends BaseActivity {
                     convertView = LayoutInflater.from(getApplication()).inflate(R.layout.item, parent, false);
                 }
                 final View view = convertView.findViewById(R.id.number);
+                view.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        return dragView.handoverTouch(v, event);
+                    }
+                });
+                view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mData[position] = false;
+                        Toast.makeText(getApplicationContext(), "Item: "+position, Toast.LENGTH_SHORT).show();
+                    }
+                });
                 if(mData[position]){ //未读
                     view.setVisibility(View.VISIBLE);
-                    view.setOnTouchListener(new View.OnTouchListener() {
-                        @Override
-                        public boolean onTouch(View v, MotionEvent event) {
-                            return dragView.handoverTouch(v, event);
-                        }
-                    });
-                    view.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            mData[position] = false;
-                        }
-                    });
                 }else{
                     view.setVisibility(View.GONE);
                 }
