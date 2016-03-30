@@ -160,6 +160,7 @@ public class DragBubbleView extends View{
                 setVisibility(View.GONE); // 隐藏BounceCircle
                 mMoveX = 0;
                 mMoveY = 0;
+                ratio = 1;
 
                 // 删除后的回调
                 if (mFinishListener != null) {
