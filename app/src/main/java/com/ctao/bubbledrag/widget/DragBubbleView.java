@@ -101,35 +101,39 @@ public class DragBubbleView extends View{
         mPaint = paint;
     }
 
+    public void setColor(int color){
+        if(mPaint != null){
+            mPaint.setColor(color);
+        }
+    }
+
     public void setMaxDistance(float maxDistance) {
         mMaxDistance = maxDistance;
     }
 
-    public DragBubbleView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init(context);
+    public DragBubbleView(Context context) {
+        this(context, null);
     }
 
     public DragBubbleView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init(context);
+        this(context, attrs, 0);
     }
 
-    public DragBubbleView(Context context) {
-        super(context);
-        init(context);
+    public DragBubbleView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        init(context, attrs);
     }
 
-    private void init(Context context) {
+    private void init(Context context, AttributeSet attrs) {
         // 设置绘制flag的paint
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaint.setColor(Color.RED);
-        mMaxDistance = Utils.converDip2px(getContext(), 86);
+        mMaxDistance = Utils.converDip2px(86);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
+
         if(needDraw){
             if (mMoveX != 0 && mMoveY != 0) {
                 if (ratio >= ratioMin) {
@@ -151,7 +155,7 @@ public class DragBubbleView extends View{
                 if (curAnimNumber == 1) { // 第一帧立即执行
                     invalidate();
                 } else { // 其余帧每隔固定时间执行
-                    postInvalidateDelayed(200);
+                    postInvalidateDelayed(160);
                 }
             } else { // 动画结束
                 animStart = false;
@@ -339,7 +343,7 @@ public class DragBubbleView extends View{
     }
 
     /**事件交接, 交接v的事件*/
-    public boolean handoverTouch(View v, MotionEvent event){
+    public boolean handoverTouch(View v, MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 return down(v);

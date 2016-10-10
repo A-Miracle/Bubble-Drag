@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+   <item type="id" name="color"></item>
+   <item type="id" name="data"></item>
+   <item type="id" name="position"></item>
+</resources>

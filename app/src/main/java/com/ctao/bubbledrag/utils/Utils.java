@@ -1,7 +1,7 @@
 package com.ctao.bubbledrag.utils;
 
 import android.app.Activity;
-import android.content.Context;
+import android.content.res.Resources;
 import android.view.Window;
 
 /**
@@ -9,6 +9,9 @@ import android.view.Window;
  * Created by A Miracle on 2016/3/24.
  */
 public class Utils {
+
+    private static final float DENSITY = Resources.getSystem().getDisplayMetrics().densityDpi / 160F;
+
     /**
      * 获取状态栏高度＋标题栏高度
      * @param activity
@@ -53,19 +56,11 @@ public class Utils {
         return !isEmpty(input);
     }
 
-    /**
-     * 根据手机的分辨率从 dp 的单位 转成为 px(像素)
-     */
-    public static int converDip2px(Context context, float dpValue) {
-        final float scale = context.getResources().getDisplayMetrics().densityDpi / 160F;// 屏幕密度
-        return (int) (dpValue * scale + 0.5f);
+    public static int converDip2px(float dpValue) {
+        return Math.round(dpValue * DENSITY);
     }
 
-    /**
-     * 根据手机的分辨率从 px(像素)的单位 转成为dp
-     */
-    public static int converPx2dip(Context context, float pxValue) {
-        final float scale = context.getResources().getDisplayMetrics().densityDpi / 160F;// 屏幕密度
-        return (int) (pxValue / scale + 0.5f);
+    public static int converPx2dip(float pxValue) {
+        return Math.round(pxValue / DENSITY);
     }
 }
