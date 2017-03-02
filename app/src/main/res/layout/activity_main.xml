@@ -83,11 +83,4 @@
                 android:src="@mipmap/icon" />
         </RelativeLayout>
     </LinearLayout>
-
-    <com.ctao.bubbledrag.widget.DragBubbleView
-        android:id="@+id/dragView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone" />
-
 </RelativeLayout>

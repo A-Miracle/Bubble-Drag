@@ -2,7 +2,14 @@ package com.ctao.bubbledrag.utils;
 
 import android.app.Activity;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.util.Log;
+import android.view.View;
 import android.view.Window;
+import android.widget.ImageView;
 
 /**
  * Utils
@@ -11,6 +18,54 @@ import android.view.Window;
 public class Utils {
 
     private static final float DENSITY = Resources.getSystem().getDisplayMetrics().densityDpi / 160F;
+    private static final Canvas sCanvas = new Canvas();
+
+    /**
+     * 从视图创建位图
+     * @param view
+     * @return
+     */
+    public static Bitmap createBitmapFromView(View view) {
+        if (view instanceof ImageView) {
+            Drawable drawable = ((ImageView) view).getDrawable();
+            if (drawable != null && drawable instanceof BitmapDrawable) {
+                return ((BitmapDrawable) drawable).getBitmap();
+            }
+        }
+        view.clearFocus();
+        Bitmap bitmap = createBitmapSafely(view.getWidth(),
+                view.getHeight(), Bitmap.Config.ARGB_8888, 1);
+        if (bitmap != null) {
+            synchronized (sCanvas) {
+                Canvas canvas = sCanvas;
+                canvas.setBitmap(bitmap);
+                view.draw(canvas);
+                canvas.setBitmap(null);
+            }
+        }
+        return bitmap;
+    }
+
+    /**
+     * 一个安全的Bitmap.createBitmap(width, height, config)
+     * @param width
+     * @param height
+     * @param config
+     * @param retryCount 重试次数
+     * @return
+     */
+    public static Bitmap createBitmapSafely(int width, int height, Bitmap.Config config, int retryCount) {
+        try {
+            return Bitmap.createBitmap(width, height, config);
+        } catch (OutOfMemoryError e) {
+            Log.e("Tools :", "OutOfMemoryError :", e);
+            if (retryCount > 0) {
+                System.gc();
+                return createBitmapSafely(width, height, config, retryCount - 1);
+            }
+            return null;
+        }
+    }
 
     /**
      * 获取状态栏高度＋标题栏高度
@@ -19,18 +74,6 @@ public class Utils {
      */
     public static int getTopBarHeight(Activity activity) {
         return activity.getWindow().findViewById(Window.ID_ANDROID_CONTENT).getTop();
-    }
-
-    /**
-     *  获取两点之间的距离
-     * @param x1
-     * @param y1
-     * @param x2
-     * @param y2
-     * @return
-     */
-    public static double distance(float x1, float y1, float x2, float y2) {
-        return Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
     }
 
     /**

@@ -47,7 +47,7 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        dragView = (DragBubbleView) findViewById(R.id.dragView);
+        dragView = DragBubbleView.attach2Window(this);
         listview = (ListView) findViewById(R.id.listview);
         unread_message = findViewById(R.id.unread_message);
 
