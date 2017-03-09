@@ -26,15 +26,16 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
     private DragBubbleView dragView;
     private View unread_message;
     private ListView listview;
-    private DemoAdapter mAdapter;
+    private MessageAdapter mAdapter;
 
     private int[] typeStyle = {R.drawable.red_dot_shape, R.drawable.red_dot_shape2, R.drawable.red_dot_shape3, R.drawable.red_dot_shape4};
-    private int[] colorStyle = {R.color.red,R.color.red, R.color.blue_light, R.color.blue_light};
+    private int[] colorStyle = {R.color.red, R.color.red, R.color.blue_light, R.color.blue_light};
 
     private ArrayList<Message> mData = new ArrayList<>();
+
     {
         Random random = new Random();
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 50; i++) {
             Message message = new Message();
             message.unreadNum = 1 + random.nextInt(199);
             message.type = random.nextInt(4);
@@ -48,6 +49,7 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
         setContentView(R.layout.activity_main);
 
         dragView = DragBubbleView.attach2Window(this);
+
         listview = (ListView) findViewById(R.id.listview);
         unread_message = findViewById(R.id.unread_message);
 
@@ -55,12 +57,12 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
             @Override
             public void onFinish(String tag, View view) {
                 //方法一： 根据Tag响应事件
-                //方法二：传递事件, 此处介绍方法二
+                //方法二： 传递事件, 此处介绍方法二
                 view.performClick(); //交递给Click事件
             }
         });
 
-        mAdapter = new DemoAdapter();
+        mAdapter = new MessageAdapter();
         listview.setAdapter(mAdapter);
 
         unread_message.setTag(TAG_COLOR, R.color.red);
@@ -69,7 +71,7 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
         unread_message.setOnClickListener(this);
     }
 
-    private class DemoAdapter extends BaseAdapter{
+    private class MessageAdapter extends BaseAdapter {
 
         @Override
         public int getCount() {
@@ -91,31 +93,36 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
             if (convertView == null) {
                 convertView = LayoutInflater.from(getApplication()).inflate(R.layout.item, parent, false);
             }
+
+            // 简易demo, ViewHolder略
+
             Message message = mData.get(position);
             final TextView number = (TextView) convertView.findViewById(R.id.number);
-            if(message.unreadNum > 0){
+            if (message.unreadNum > 0) {
                 number.setVisibility(View.VISIBLE);
                 number.setText(message.unreadNum > 99 ? "99+" : message.unreadNum + "");
                 number.setBackgroundResource(typeStyle[message.type]);
                 number.setTag(TAG_COLOR, colorStyle[message.type]);
                 number.setTag(TAG_DATA, message);
                 number.setTag(TAG_POSITION, position);
+                number.setTag(DragBubbleView.BUBBLE, DragBubbleView.BUBBLE);
                 number.setOnTouchListener(MainActivity.this);
                 number.setOnClickListener(MainActivity.this);
-            }else{
+            } else {
                 number.setVisibility(View.GONE);
             }
             return convertView;
         }
     }
 
-    private class Message{
+    private class Message {
         int unreadNum; // 未读条数
         int type; // 消息类型(样式)
 
         public Message() {
             super();
         }
+
         public Message(int unreadNum, int type) {
             super();
             this.unreadNum = unreadNum;
@@ -135,18 +142,27 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.unread_message:
-                for (Message message : mData) {
-                    message.unreadNum = 0;
-                }
-                mAdapter.notifyDataSetChanged();
-                Toast.makeText(getApplication(), "全部忽略", Toast.LENGTH_SHORT).show();
+                // 方法一: 自行找出所有需要执行爆炸动画的 MessageView
+                //dragView.allIgnore(List<View> views, OnListFinishListener listener);
+
+                // 方法二: 设置 MessageView.setTag(DragBubbleView.BUBBLE, DragBubbleView.BUBBLE);
+                dragView.allIgnore(listview, new DragBubbleView.OnListFinishListener() {
+                    @Override
+                    public void onFinish() {
+                        for (Message message : mData) {
+                            message.unreadNum = 0;
+                        }
+                        mAdapter.notifyDataSetChanged();
+                        Toast.makeText(getApplication(), "全部忽略", Toast.LENGTH_SHORT).show();
+                    }
+                });
                 break;
             default:
                 Message message = (Message) v.getTag(TAG_DATA);
                 int position = (int) v.getTag(TAG_POSITION);
                 message.unreadNum = 0;
                 mAdapter.notifyDataSetChanged();
-                Toast.makeText(getApplication(), "item: "+position, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplication(), "item: " + position, Toast.LENGTH_SHORT).show();
                 break;
         }
     }

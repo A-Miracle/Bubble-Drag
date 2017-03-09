@@ -23,7 +23,9 @@ import com.ctao.bubbledrag.AppManager;
 import com.ctao.bubbledrag.R;
 import com.ctao.bubbledrag.utils.Utils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,6 +33,8 @@ import java.util.Map;
  * Created by A Miracle on 2016/3/24.
  */
 public class DragBubbleView extends View{
+
+    public static final int BUBBLE = 0x12345678;
 
     /**Path*/				        private Path mPath;
     /**Paint*/				        private Paint mPaint;
@@ -57,6 +61,10 @@ public class DragBubbleView extends View{
     // 是否响应按键事件，如果一个气泡已经在响应，其它气泡就不响应，同一界面始终最多只有一个气泡响应按键
     private boolean isTouchable = true;
 
+    /**集合动画列表*/                 private List<View> mViews;
+    /**集合动画开始*/                 private boolean isListAnimStart;
+    /**集合气泡爆炸完成结束回调*/	    private OnListFinishListener mListFinishListener;
+
     /**挂载到Activity上*/
     public static DragBubbleView attach2Window(Activity activity){
         ViewGroup rootView = (ViewGroup) activity.findViewById(Window.ID_ANDROID_CONTENT);
@@ -80,8 +88,8 @@ public class DragBubbleView extends View{
     }
 
     /**气泡爆炸完成结束回调*/
-    public void setOnFinishListener(OnFinishListener finishListener) {
-        mFinishListener = finishListener;
+    public void setOnFinishListener(OnFinishListener listener) {
+        mFinishListener = listener;
     }
 
     /**
@@ -131,6 +139,37 @@ public class DragBubbleView extends View{
 
     public void setMaxDistance(float maxDistance) {
         mMaxDistance = maxDistance;
+    }
+
+    /**
+     * 全部忽略
+     * @param views 需要执行爆炸动画的MessageView
+     * @param listener
+     */
+    public void allIgnore(List<View> views, OnListFinishListener listener){
+        if(views != null && views.size() > 0){
+            mViews = views;
+            mListFinishListener = listener;
+            postInvalidate();
+        }
+    }
+
+    /**
+     * 全部忽略
+     * @param viewGroup 对应列表ViewGroup, 必须设置 MessageView.setTag(BUBBLE, BUBBLE);
+     * @param listener
+     */
+    public void allIgnore(ViewGroup viewGroup, OnListFinishListener listener){
+        if(viewGroup != null){
+            mViews = new ArrayList<>();
+            findBubble(viewGroup, mViews);
+            if(mViews.size() > 0){
+                mListFinishListener = listener;
+                postInvalidate();
+            }else{
+                mViews = null;
+            }
+        }
     }
 
     public DragBubbleView(Context context) {
@@ -195,6 +234,58 @@ public class DragBubbleView extends View{
                 responseListener();
                 mLockX = mLockY = 0;
                 reset();
+
+                if(mViews != null && mViews.size() > 0){
+                    isListAnimStart = true;
+                    postInvalidateDelayed(160);
+                }
+            }
+        }
+
+        if(isListAnimStart){
+            startListAnim(canvas);
+        }
+    }
+
+    private void startListAnim(Canvas canvas) {
+        if(mViews != null && mViews.size() > 0){
+            if(mExplosionAnim == null){
+                initAnim();
+                setVisibility(View.VISIBLE);
+            }
+
+            if(mLockX == 0 && mLockY == 0){ //锁定一个View, 执行动画
+                View view = mViews.get(0);
+                int width = view.getWidth();
+                int height = view.getHeight();
+                int[] position = new int[2];
+                view.getLocationOnScreen(position);
+                mLockX = position[0] + width/2;
+                mLockY = position[1] - Utils.getTopBarHeight(AppManager.getInstance().getCurrentActivity()) + height/2;
+                view.setVisibility(View.GONE);
+            }
+
+            if (mCurAnimNumber < mAnimNumber) { // 动画进行中
+                canvas.drawBitmap(mExplosionAnim[mCurAnimNumber], mLockX - mAnimWidth / 2, mLockY - mAnimHeight / 2, null);
+                mCurAnimNumber++;
+                if (mCurAnimNumber == 1) { // 第一帧立即执行
+                    invalidate();
+                } else { // 其余帧每隔固定时间执行
+                    postInvalidateDelayed(160);
+                }
+            } else { // 动画结束
+                mCurAnimNumber = 0;
+                mLockX = mLockY = 0;
+                mViews.remove(0);
+                startListAnim(canvas); //轮询下一个View
+            }
+        }else{
+            isListAnimStart = false;
+            mViews = null;
+            recycleBitmap();
+            setVisibility(View.GONE);
+            if(mListFinishListener != null){
+                mListFinishListener.onFinish();
             }
         }
     }
@@ -381,7 +472,24 @@ public class DragBubbleView extends View{
         mOriginalView = null;
     }
 
+    private void findBubble(ViewGroup viewGroup, List<View> views){
+        for (int i = 0; i < viewGroup.getChildCount(); i++) {
+            View childAt = viewGroup.getChildAt(i);
+            if(childAt.getTag(BUBBLE) != null
+                    && childAt.getVisibility() == View.VISIBLE){
+                views.add(childAt);
+            }
+            if(childAt instanceof ViewGroup) {
+                findBubble((ViewGroup) childAt, views);// 轮询
+            }
+        }
+    }
+
     public interface OnFinishListener {
         void onFinish(String tag, View view);
+    }
+
+    public interface OnListFinishListener {
+        void onFinish();
     }
 }
