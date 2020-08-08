@@ -7,4 +7,5 @@
 - 简单使用请参考MainAct
 
 <br/>
+
 ![image](https://github.com/A-Miracle/Bubble-Drag/blob/master/demo.gif?raw=true)
