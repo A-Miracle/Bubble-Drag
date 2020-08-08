@@ -1,4 +1,4 @@
-package com.ctao.bubbledrag.utils;
+package a.miracle.bubbledrag.utils;
 
 import android.app.Activity;
 import android.content.res.Resources;
@@ -99,11 +99,11 @@ public class Utils {
         return !isEmpty(input);
     }
 
-    public static int converDip2px(float dpValue) {
+    public static int dp2px(float dpValue) {
         return Math.round(dpValue * DENSITY);
     }
 
-    public static int converPx2dip(float pxValue) {
+    public static int px2dp(float pxValue) {
         return Math.round(pxValue / DENSITY);
     }
 }

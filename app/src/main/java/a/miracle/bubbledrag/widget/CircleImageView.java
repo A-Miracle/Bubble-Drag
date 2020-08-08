@@ -1,4 +1,4 @@
-package com.ctao.bubbledrag.widget;
+package a.miracle.bubbledrag.widget;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -11,11 +11,12 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.widget.ImageView;
 
 /**
  * see https://github.com/A-Miracle/CustomView
  */
-public class CircleImageView extends android.support.v7.widget.AppCompatImageView {
+public class CircleImageView extends ImageView {
 
     private Paint mBitmapPaint;
     private float mRadius;
@@ -44,7 +45,7 @@ public class CircleImageView extends android.support.v7.widget.AppCompatImageVie
         int measuredWidth = getMeasuredWidth();
         int measuredHeight = getMeasuredHeight();
         if (measuredWidth != 0 || measuredHeight != 0) {
-            int size = measuredWidth > measuredHeight ? measuredHeight : measuredWidth;
+            int size = Math.min(measuredWidth, measuredHeight);
             mRadius = size / 2.0f;
             setMeasuredDimension(size, size);
         }

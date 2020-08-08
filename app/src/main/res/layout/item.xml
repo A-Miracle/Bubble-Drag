@@ -6,7 +6,7 @@
     android:orientation="horizontal"
     android:padding="10dp" >
 
-    <com.ctao.bubbledrag.widget.CircleImageView
+    <a.miracle.bubbledrag.widget.CircleImageView
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:src="@mipmap/icon" />

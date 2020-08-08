@@ -34,7 +34,7 @@
                 android:layout_width="60dp"
                 android:layout_height="match_parent" >
 
-                <com.ctao.bubbledrag.widget.CircleImageView
+                <a.miracle.bubbledrag.widget.CircleImageView
                     android:id="@+id/message_icon"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
@@ -60,7 +60,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1" >
 
-            <com.ctao.bubbledrag.widget.CircleImageView
+            <a.miracle.bubbledrag.widget.CircleImageView
                 android:id="@+id/contact_icon"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
@@ -73,7 +73,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1" >
 
-            <com.ctao.bubbledrag.widget.CircleImageView
+            <a.miracle.bubbledrag.widget.CircleImageView
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_centerInParent="true"

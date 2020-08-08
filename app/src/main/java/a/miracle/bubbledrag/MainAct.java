@@ -1,4 +1,4 @@
-package com.ctao.bubbledrag;
+package a.miracle.bubbledrag;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,13 +12,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ctao.bubbledrag.base.BaseActivity;
-import com.ctao.bubbledrag.widget.DragBubbleView;
+import a.miracle.bubbledrag.base.BaseAct;
+import a.miracle.bubbledrag.widget.DragBubbleView;
 
 import java.util.ArrayList;
 import java.util.Random;
 
-public class MainActivity extends BaseActivity implements OnTouchListener, OnClickListener {
+public class MainAct extends BaseAct implements OnTouchListener, OnClickListener {
     private static final int TAG_COLOR = R.id.color;
     private static final int TAG_DATA = R.id.data;
     private static final int TAG_POSITION = R.id.position;
@@ -106,8 +106,8 @@ public class MainActivity extends BaseActivity implements OnTouchListener, OnCli
                 number.setTag(TAG_DATA, message);
                 number.setTag(TAG_POSITION, position);
                 number.setTag(DragBubbleView.BUBBLE, DragBubbleView.BUBBLE);
-                number.setOnTouchListener(MainActivity.this);
-                number.setOnClickListener(MainActivity.this);
+                number.setOnTouchListener(MainAct.this);
+                number.setOnClickListener(MainAct.this);
             } else {
                 number.setVisibility(View.GONE);
             }

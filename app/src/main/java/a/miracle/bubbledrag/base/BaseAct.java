@@ -1,14 +1,14 @@
-package com.ctao.bubbledrag.base;
+package a.miracle.bubbledrag.base;
 
 import android.app.Activity;
 import android.os.Bundle;
 
-import com.ctao.bubbledrag.AppManager;
+import a.miracle.bubbledrag.AppManager;
 
 /**
  * Created by A Miracle on 2016/3/24.
  */
-public class BaseActivity extends Activity {
+public class BaseAct extends Activity {
 
     @Override
     public void finish() {

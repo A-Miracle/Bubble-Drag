@@ -1,4 +1,4 @@
-package com.ctao.bubbledrag.widget;
+package a.miracle.bubbledrag.widget;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -19,9 +19,9 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.animation.CycleInterpolator;
 
-import com.ctao.bubbledrag.AppManager;
-import com.ctao.bubbledrag.R;
-import com.ctao.bubbledrag.utils.Utils;
+import a.miracle.bubbledrag.AppManager;
+import a.miracle.bubbledrag.R;
+import a.miracle.bubbledrag.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -189,7 +189,7 @@ public class DragBubbleView extends View{
         mPath = new Path();
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaint.setColor(Color.RED);
-        mMaxDistance = Utils.converDip2px(86);
+        mMaxDistance = Utils.dp2px(86);
         setVisibility(View.GONE);
     }
 
